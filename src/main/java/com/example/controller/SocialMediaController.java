@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.entity.Account;
+import com.example.exception.AuthenticationException;
 import com.example.exception.RegistrationException;
 import com.example.service.AccountService;
 
@@ -36,11 +37,24 @@ public class SocialMediaController {
         
     }
 
+    @PostMapping(value = "/login")
+    public ResponseEntity postLogin(@RequestBody Account account){
+        Account foundAccount = accountService.login(account);
+        return ResponseEntity.status(200).body(foundAccount);
+        
+    }
+
     //This will handle the exception for when registering and the username or password doesn't follow
     //the constraints for that data
     @ExceptionHandler(RegistrationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public @ResponseBody String registrationErrorHandler(RegistrationException ex) {
+        return ex.getMessage();
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public @ResponseBody String authenticationErrorHandler(AuthenticationException ex) {
         return ex.getMessage();
     }
 
