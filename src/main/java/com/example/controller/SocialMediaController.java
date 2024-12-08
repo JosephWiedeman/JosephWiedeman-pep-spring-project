@@ -3,6 +3,7 @@ package com.example.controller;
 import java.net.http.HttpResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,24 +31,24 @@ public class SocialMediaController {
 
     @PostMapping(value = "/register")
     public ResponseEntity postRegister(@RequestBody Account account){
-        
         Account addedAccount = accountService.persistAccount(account);
-        if(addedAccount == null){
-            throw new RegistrationException("The username or password doesn't fit the requirements");
-        }
         return ResponseEntity.status(200).body(addedAccount);
         
     }
 
+    //This will handle the exception for when registering and the username or password doesn't follow
+    //the constraints for that data
     @ExceptionHandler(RegistrationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String runtimeHandler(RegistrationException ex) {
+    public @ResponseBody String registrationErrorHandler(RegistrationException ex) {
         return ex.getMessage();
     }
 
-    @ExceptionHandler({RuntimeException.class})
+    //This is an exception handler for when the registration already has a unique username, and it violates
+    //the integreity of the datatable
+    @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public @ResponseBody String runtimeHandler(RuntimeException ex) {
+    public @ResponseBody String dataIntegrityViolationHandler(DataIntegrityViolationException ex) {
         return ex.getMessage();
     }
 }

@@ -19,8 +19,9 @@ public class AccountService {
     }
 
     public Account persistAccount(Account account){
+        //The best practices I found is that the service layer should throw the exceptions, not the controller
         if(account.getUsername().equals("") || account.getPassword().length() < 4){
-            return null;
+            throw new RegistrationException("The username or password doesn't fit the requirements");
         }
         return accountRepository.save(account);
     }
