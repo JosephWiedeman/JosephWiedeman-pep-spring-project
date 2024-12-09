@@ -9,9 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.exception.AuthenticationException;
 import com.example.exception.RegistrationException;
 import com.example.service.AccountService;
+import com.example.service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -23,13 +25,16 @@ import com.example.service.AccountService;
 public class SocialMediaController {
 
     private AccountService accountService;
+    private MessageService messageService;
 
     @Autowired
-    public SocialMediaController(AccountService accountService){
+    public SocialMediaController(AccountService accountService, MessageService messageService){
         this.accountService = accountService;
+        this.messageService = messageService;
     }
 
 
+    //User Story 1, register users
     @PostMapping(value = "/register")
     public ResponseEntity postRegister(@RequestBody Account account){
         Account addedAccount = accountService.persistAccount(account);
@@ -37,10 +42,25 @@ public class SocialMediaController {
         
     }
 
+    //User Story 2, login/authenticate users
     @PostMapping(value = "/login")
     public ResponseEntity postLogin(@RequestBody Account account){
         Account foundAccount = accountService.login(account);
         return ResponseEntity.status(200).body(foundAccount);
+        
+    }
+
+    //User Story 4, get all messages
+    @GetMapping("/messages")
+    public ResponseEntity getAllMessages(){
+        return ResponseEntity.status(200).body(messageService.getAllMessages());
+        
+    }
+
+    //User Story 5, get messages by message id
+    @GetMapping("/messages/{messageId}")
+    public ResponseEntity getMessageById(@PathVariable int messageId){
+        return ResponseEntity.status(200).body(messageService.getMessageById(messageId));
         
     }
 
