@@ -22,7 +22,7 @@ public class MessageService {
     }
 
     public Message getMessageById(int messageId){
-        Optional<Message> optionalMessage = messageRepository.findByMessageId(messageId);
+        Optional<Message> optionalMessage = messageRepository.findById(messageId);
         if(optionalMessage.isPresent()){
             return optionalMessage.get();
         }
