@@ -50,11 +50,11 @@ public class SocialMediaController {
         return ResponseEntity.status(200).body(foundAccount);
     }
 
+    //User Story 3, create messages
     @PostMapping(value = "/messages")
     public ResponseEntity postMessage(@RequestBody Message message){
         Message addedMessage = messageService.persistMessage(message);
         return ResponseEntity.status(200).body(addedMessage);
-        
     }
 
     //User Story 4, get all messages
@@ -78,11 +78,11 @@ public class SocialMediaController {
         
     }
 
-    //This will handle the exception for when registering and the username or password doesn't follow
-    //the constraints for that data
+    //This will handle the exception for when creating messages and the message text doesn't follow
+    //the constraints for that data or the user doesn't exist yet
     @ExceptionHandler(MessageCreationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String registrationErrorHandler(MessageCreationException ex) {
+    public @ResponseBody String messageCreationExceptionHandler(MessageCreationException ex) {
         return ex.getMessage();
     }
 
@@ -90,13 +90,13 @@ public class SocialMediaController {
     //the constraints for that data
     @ExceptionHandler(RegistrationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public @ResponseBody String registrationErrorHandler(RegistrationException ex) {
+    public @ResponseBody String registrationExceptionHandler(RegistrationException ex) {
         return ex.getMessage();
     }
 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public @ResponseBody String authenticationErrorHandler(AuthenticationException ex) {
+    public @ResponseBody String authenticationExceptionHandler(AuthenticationException ex) {
         return ex.getMessage();
     }
 
