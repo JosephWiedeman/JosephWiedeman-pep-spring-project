@@ -28,4 +28,9 @@ public class MessageService {
         }
         return null;
     }
+
+    //Gets all the messages by the account posters id
+    public List<Message> getMessagesByPostedBy(int postedBy){
+        return messageRepository.findMessagesByPostedBy(postedBy);
+    }
 }

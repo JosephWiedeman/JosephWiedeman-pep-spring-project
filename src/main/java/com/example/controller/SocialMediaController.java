@@ -57,10 +57,17 @@ public class SocialMediaController {
         
     }
 
-    //User Story 5, get messages by message id
+    //User Story 5, get message by message id
     @GetMapping("/messages/{messageId}")
     public ResponseEntity getMessageById(@PathVariable int messageId){
         return ResponseEntity.status(200).body(messageService.getMessageById(messageId));
+        
+    }
+
+    //User Story 8, get messages by account id
+    @GetMapping("/accounts/{accountId}/messages")
+    public ResponseEntity getMessagesByAccountId(@PathVariable int accountId){
+        return ResponseEntity.status(200).body(messageService.getMessagesByPostedBy(accountId));
         
     }
 
