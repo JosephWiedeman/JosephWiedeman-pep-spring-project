@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.exception.AuthenticationException;
+import com.example.exception.MessageCreationException;
 import com.example.exception.RegistrationException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
@@ -47,6 +48,12 @@ public class SocialMediaController {
     public ResponseEntity postLogin(@RequestBody Account account){
         Account foundAccount = accountService.login(account);
         return ResponseEntity.status(200).body(foundAccount);
+    }
+
+    @PostMapping(value = "/messages")
+    public ResponseEntity postMessage(@RequestBody Message message){
+        Message addedMessage = messageService.persistMessage(message);
+        return ResponseEntity.status(200).body(addedMessage);
         
     }
 
@@ -69,6 +76,14 @@ public class SocialMediaController {
     public ResponseEntity getMessagesByAccountId(@PathVariable int accountId){
         return ResponseEntity.status(200).body(messageService.getMessagesByPostedBy(accountId));
         
+    }
+
+    //This will handle the exception for when registering and the username or password doesn't follow
+    //the constraints for that data
+    @ExceptionHandler(MessageCreationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody String registrationErrorHandler(MessageCreationException ex) {
+        return ex.getMessage();
     }
 
     //This will handle the exception for when registering and the username or password doesn't follow
