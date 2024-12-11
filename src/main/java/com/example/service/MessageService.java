@@ -53,4 +53,14 @@ public class MessageService {
     public List<Message> getMessagesByPostedBy(int postedBy){
         return messageRepository.findMessagesByPostedBy(postedBy);
     }
+
+    //Deletes a message in the repository. If no message with that ID, then no deletion necessary, 
+    //just return no rows were deleted
+    public int deleteMessageById(int messageId){
+        if(messageRepository.existsById(messageId)){
+            messageRepository.deleteById(messageId);
+            //Only one row is affected by this deleteion
+            return 1;
+        }return 0; //No message to be deleted, no rows affected
+    }
 }

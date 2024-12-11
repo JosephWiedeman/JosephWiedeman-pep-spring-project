@@ -71,6 +71,19 @@ public class SocialMediaController {
         
     }
 
+     //User Story 6, delete message given a message id
+     @DeleteMapping("/messages/{messageId}")
+     public ResponseEntity deleteMessageById(@PathVariable int messageId){
+        int deletedRows = messageService.deleteMessageById(messageId);
+        //If no rows were deleted, then we just return an empty body. Not really an exception issue
+        if(deletedRows == 0){
+            return ResponseEntity.status(200).build();
+        }
+        //If there were rows deleted, then the body contains the number(which is only 1 as of now)
+        return ResponseEntity.status(200).body(deletedRows);
+         
+     }
+
     //User Story 8, get messages by account id
     @GetMapping("/accounts/{accountId}/messages")
     public ResponseEntity getMessagesByAccountId(@PathVariable int accountId){
