@@ -13,7 +13,18 @@ import com.example.entity.Account;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer>{
 
+    /**
+     * Finds an account with the given username, and returns an optional account
+     * @param username The account's username
+     * @return An optional account that may or may not have an account that matches the account data
+     */
     Optional<Account> findByUsername(String username);
 
+    /**
+     * Finds an account with the given username and password, and returns an optional account
+     * @param username The account's username
+     * @param password The account password
+     * @return An optional account that may or may not have an account that matches the account data
+     */
     Optional<Account> findByUsernameAndPassword(String username, String password);
 }
