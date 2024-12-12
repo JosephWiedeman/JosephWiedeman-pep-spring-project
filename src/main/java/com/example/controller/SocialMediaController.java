@@ -13,6 +13,7 @@ import com.example.entity.Message;
 import com.example.exception.AuthenticationException;
 import com.example.exception.MessageCreationException;
 import com.example.exception.RegistrationException;
+import com.example.exception.UpdateMessageException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
@@ -72,8 +73,8 @@ public class SocialMediaController {
     }
 
      //User Story 6, delete message given a message id
-     @DeleteMapping("/messages/{messageId}")
-     public ResponseEntity deleteMessageById(@PathVariable int messageId){
+    @DeleteMapping("/messages/{messageId}")
+    public ResponseEntity deleteMessageById(@PathVariable int messageId){
         int deletedRows = messageService.deleteMessageById(messageId);
         //If no rows were deleted, then we just return an empty body. Not really an exception issue
         if(deletedRows == 0){
@@ -82,7 +83,16 @@ public class SocialMediaController {
         //If there were rows deleted, then the body contains the number(which is only 1 as of now)
         return ResponseEntity.status(200).body(deletedRows);
          
-     }
+    }
+    
+    //User Story 7, update messages by account id using updated message text
+    @PatchMapping("/messages/{messageId}")
+    public ResponseEntity patchMessageByMessageId(@PathVariable int messageId, @RequestParam String messageText){
+        //This returns the number of rows affected in the body. There are exceptions for the messageText constraints
+        //and determining if the message exists already.
+        return ResponseEntity.status(200).body(messageService.updateMessageTextByMessageId(messageId, messageText));
+        
+    }
 
     //User Story 8, get messages by account id
     @GetMapping("/accounts/{accountId}/messages")
@@ -107,9 +117,19 @@ public class SocialMediaController {
         return ex.getMessage();
     }
 
+    //This will handle the exception that the user was unable to authenticate and login, aka, wrong
+    //username and password was given to the repository. 
     @ExceptionHandler(AuthenticationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public @ResponseBody String authenticationExceptionHandler(AuthenticationException ex) {
+        return ex.getMessage();
+    }
+
+    //This will handle the exception for when updating messages texts and the message text doesn't follow
+    //the constraints for that data or the message didn't exist yet before the update
+    @ExceptionHandler(UpdateMessageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public @ResponseBody String updateMessageExceptionHandler(UpdateMessageException ex){
         return ex.getMessage();
     }
 

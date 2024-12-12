@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.exception.MessageCreationException;
+import com.example.exception.UpdateMessageException;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
@@ -62,5 +62,23 @@ public class MessageService {
             //Only one row is affected by this deleteion
             return 1;
         }return 0; //No message to be deleted, no rows affected
+    }
+
+    public int updateMessageTextByMessageId(int messageId, String messageText){
+        //If the messageText is black or is greater than 255 characters, then the exception is thrown
+        if(messageText.equals("") || messageText.length() > 255){
+            throw new UpdateMessageException("The updated message should not be blank or exceed 255 characters.");
+        }
+        Optional<Message> optionalMessage = messageRepository.findById(messageId);
+        //If the message does exist and the updated message fits the constraints, update messages text 
+        //and save the new updated message. Return that 1 row was affected.
+        if(optionalMessage.isPresent()){
+            Message updatedMessage = optionalMessage.get();
+            updatedMessage.setMessageText(messageText);
+            messageRepository.save(updatedMessage);
+            return 1;
+        }
+        //If the message didn;t already exist, the exception is thrown
+        throw new UpdateMessageException("The message trying to be updated could not be found.");
     }
 }
