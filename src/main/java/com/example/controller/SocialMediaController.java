@@ -87,10 +87,10 @@ public class SocialMediaController {
     
     //User Story 7, update messages by account id using updated message text
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity patchMessageByMessageId(@PathVariable int messageId, @RequestParam String messageText){
+    public ResponseEntity patchMessageByMessageId(@PathVariable int messageId, @RequestBody Message newMessage){
         //This returns the number of rows affected in the body. There are exceptions for the messageText constraints
         //and determining if the message exists already.
-        return ResponseEntity.status(200).body(messageService.updateMessageTextByMessageId(messageId, messageText));
+        return ResponseEntity.status(200).body(messageService.updateMessageTextByMessageId(messageId, newMessage));
         
     }
 

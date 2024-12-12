@@ -64,9 +64,9 @@ public class MessageService {
         }return 0; //No message to be deleted, no rows affected
     }
 
-    public int updateMessageTextByMessageId(int messageId, String messageText){
+    public int updateMessageTextByMessageId(int messageId, Message newMessage){
         //If the messageText is black or is greater than 255 characters, then the exception is thrown
-        if(messageText.equals("") || messageText.length() > 255){
+        if(newMessage.getMessageText().equals("") || newMessage.getMessageText().length() > 255){
             throw new UpdateMessageException("The updated message should not be blank or exceed 255 characters.");
         }
         Optional<Message> optionalMessage = messageRepository.findById(messageId);
@@ -74,11 +74,12 @@ public class MessageService {
         //and save the new updated message. Return that 1 row was affected.
         if(optionalMessage.isPresent()){
             Message updatedMessage = optionalMessage.get();
-            updatedMessage.setMessageText(messageText);
+            updatedMessage.setMessageText(newMessage.getMessageText());
             messageRepository.save(updatedMessage);
             return 1;
         }
         //If the message didn;t already exist, the exception is thrown
         throw new UpdateMessageException("The message trying to be updated could not be found.");
+        
     }
 }
